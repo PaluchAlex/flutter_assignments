@@ -39,7 +39,6 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            //SingleChildScrollView
             Image.network(
               "https://www.datocms-assets.com/43475/1684417840-leu-euro.png?auto=format&fit=crop&h=530&w=940",
               fit: BoxFit.fitWidth,
@@ -64,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                       error = "please enter a number";
                     } else {
                       error = null;
-                      converted = intValue * 4.5;
+                      converted = intValue * 4.5; //modify for current value of EUR in RON
                       showConverted = true;
                     }
                   });
