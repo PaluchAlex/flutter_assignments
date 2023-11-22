@@ -23,10 +23,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String data = "0";
+  String data = "";
   double converted = 0;
   String? error;
-  bool isText = false;
+  bool showConverted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,44 +36,49 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.lightGreenAccent,
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Image.network("https://www.datocms-assets.com/43475/1684417840-leu-euro.png?auto=format&fit=crop&h=530&w=940",
-          fit: BoxFit.fitWidth,
-          ),
-          TextField(
-            decoration: InputDecoration(
-              labelText: "enter the amount in EUR",
-              errorText: error,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            //SingleChildScrollView
+            Image.network(
+              "https://www.datocms-assets.com/43475/1684417840-leu-euro.png?auto=format&fit=crop&h=530&w=940",
+              fit: BoxFit.fitWidth,
             ),
-            keyboardType: TextInputType.number,
-
-            onChanged: (value) {
-              setState(() {
-                data = value;
-              });
-            },
-          ),
-          ElevatedButton(onPressed: (){
-            setState((){
-              int? intValue = int.tryParse(data);
-              if(data.isEmpty || intValue == null) {
-                error = "please enter a number";
-              }else{
-                error = null;
-                converted = intValue * 4.5;
-                isText = true;
-              }
-            });
-          }, child: const Text("Convert")),
-          if(isText)
-            Text(""
+            TextField(
+              decoration: InputDecoration(
+                labelText: "enter the amount in EUR",
+                errorText: error,
+              ),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                setState(() {
+                  data = value;
+                });
+              },
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    double? intValue = double.tryParse(data);
+                    if (data.isEmpty || intValue == null) {
+                      error = "please enter a number";
+                    } else {
+                      error = null;
+                      converted = intValue * 4.5;
+                      showConverted = true;
+                    }
+                  });
+                },
+                child: const Text("Convert")),
+            if (showConverted)
+              Text(
                 "$converted RON",
-              style: TextStyle(fontSize: 30),
-            )
-          else
-            Container(),
-        ],
+                style: const TextStyle(fontSize: 30),
+              )
+            else
+              Container(),
+          ],
+        ),
       ),
     );
   }
