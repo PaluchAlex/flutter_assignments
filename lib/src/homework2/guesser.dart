@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  String? error;
   bool showHintingText = false;
   bool win = false;
   int guessedNumber = -1;
@@ -154,12 +155,19 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
+                          decoration: InputDecoration(
+                            errorText: error,
+                          ),
                           controller: _textEditingController,
                           keyboardType: TextInputType.number,
                           onChanged: (value) {
                             setState(() {
-                              //error non
-                              textFieldValue = int.tryParse(value);
+                              if (int.tryParse(value) == null && value!="") {
+                                error = "please enter a number";
+                              } else {
+                                error = null;
+                                textFieldValue = int.tryParse(value);
+                              }
                             });
                           },
                         ),
@@ -167,45 +175,45 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: FilledButton(
-                            style: FilledButton.styleFrom(
+                          style: FilledButton.styleFrom(
                               elevation: 3,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
-                              )
-                            ),
-                            onPressed: () {
-                              onPressedButton();
-                              win ?
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('You guessed right!'),
-                                    content: Text('it was $guessedNumber'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            resetValues();
-                                          });
-                                          // Close the alert
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('Try again!'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          // Close the alert
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('OK'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ) : Container();
-                            },
-                            child: Text(buttonText),
+                              )),
+                          onPressed: () {
+                            onPressedButton();
+                            win
+                                ? showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('You guessed right!'),
+                                        content: Text('it was $guessedNumber'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                resetValues();
+                                              });
+                                              // Close the alert
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Try again!'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              // Close the alert
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('OK'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  )
+                                : Container();
+                          },
+                          child: Text(buttonText),
                         ),
                       ),
                     ],
@@ -219,5 +227,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
