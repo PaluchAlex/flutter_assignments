@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
 
   int generateNewNumber() {
     int number = Random().nextInt(99) + 1;
-    print("the generated random number is: $number");
+    //print("the generated random number is: $number");
     return number;
   }
 
@@ -76,8 +76,6 @@ class _HomePageState extends State<HomePage> {
         randomNumber = generateNewNumber();
       }
       if (randomNumber == textFieldValue) {
-        print("CONGRATS!");
-
         setState(() {
           hint = "You guessed right.";
           buttonText = "Reset";
@@ -88,12 +86,10 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           hint = "Try higher";
         });
-        print("bigger!");
       } else {
         setState(() {
           hint = "Try lower";
         });
-        print("smaller!");
       }
     }
     // Clear the TextField
@@ -155,6 +151,7 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
+                          enabled: !win,
                           decoration: InputDecoration(
                             errorText: error,
                           ),
