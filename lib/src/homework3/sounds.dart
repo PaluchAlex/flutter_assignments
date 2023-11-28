@@ -59,8 +59,8 @@ class _HomePageState extends State<HomePage> {
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
+            crossAxisSpacing: 24,
+            mainAxisSpacing: 24,
           ),
           itemCount: cardItems.length,
           itemBuilder: (BuildContext context, int index) {
@@ -68,8 +68,13 @@ class _HomePageState extends State<HomePage> {
               onTap: () async {
                 await player.play(AssetSource(mp3Items[index]));
               },
-              child: Card(
-                color: Colors.blueAccent,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient:
+                      const LinearGradient(colors: [Colors.blue, Colors.green]),
+                  color: Colors.blueAccent,
+                  borderRadius: BorderRadius.circular(30),
+                ),
                 child: Center(
                   child: Text(cardItems[index]),
                 ),
