@@ -26,16 +26,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> cardItems = <String>[
-    'bird',
-    'cow',
-    'goat',
-    'horse',
-    'kitty',
-    'monkey',
-    'sheep',
-    'wolf'
-  ];
+  List<String> cardItems = <String>['bird', 'cow', 'goat', 'horse', 'kitty', 'monkey', 'sheep', 'wolf'];
   List<String> mp3Items = <String>[
     'bird.mp3',
     'cow.mp3',
@@ -72,8 +63,7 @@ class _HomePageState extends State<HomePage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                      colors: <Color>[Colors.blue, Colors.green]),
+                  gradient: const LinearGradient(colors: <Color>[Colors.blue, Colors.green]),
                   color: Colors.blueAccent,
                   borderRadius: BorderRadius.circular(30),
                 ),
