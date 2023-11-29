@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import "dart:math";
+import 'dart:math';
 
-main() {
+import 'package:flutter/material.dart';
+
+void main() {
   runApp(const Guesser());
 }
 
@@ -11,7 +12,7 @@ class Guesser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Guesser",
+      title: 'Guesser',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
@@ -43,20 +44,20 @@ class _HomePageState extends State<HomePage> {
   int guessedNumber = -1;
   int? textFieldValue;
   int randomNumber = -1;
-  String hint = "";
-  String buttonText = "Guess";
+  String hint = '';
+  String buttonText = 'Guess';
 
   void resetValues() {
     showHintingText = false;
     win = false;
     guessedNumber = -1;
     randomNumber = -1;
-    hint = "";
-    buttonText = "Guess";
+    hint = '';
+    buttonText = 'Guess';
   }
 
   int generateNewNumber() {
-    int number = Random().nextInt(99) + 1;
+    final int number = Random().nextInt(99) + 1;
     //print("the generated random number is: $number");
     return number;
   }
@@ -77,18 +78,18 @@ class _HomePageState extends State<HomePage> {
       }
       if (randomNumber == textFieldValue) {
         setState(() {
-          hint = "You guessed right.";
-          buttonText = "Reset";
+          hint = 'You guessed right.';
+          buttonText = 'Reset';
           win = true;
         });
         randomNumber = generateNewNumber();
       } else if (randomNumber > textFieldValue!) {
         setState(() {
-          hint = "Try higher";
+          hint = 'Try higher';
         });
       } else {
         setState(() {
-          hint = "Try lower";
+          hint = 'Try lower';
         });
       }
     }
@@ -100,18 +101,18 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Guesser"),
+        title: const Text('Guesser'),
         centerTitle: true,
         backgroundColor: Colors.green,
       ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
-            children: [
+            children: <Widget>[
               const Padding(
                 padding: EdgeInsets.all(14.0),
                 child: Text(
-                  "I`m thinking of a number between 1 and 100.",
+                  'I`m thinking of a number between 1 and 100.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 24),
                 ),
@@ -119,7 +120,7 @@ class _HomePageState extends State<HomePage> {
               const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(
-                  "It`s up to you to guess my number!",
+                  'It`s up to you to guess my number!',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -128,10 +129,9 @@ class _HomePageState extends State<HomePage> {
                 child: Container(
                   child: showHintingText
                       ? Text(
-                          "You tried $guessedNumber\n $hint",
+                          'You tried $guessedNumber\n $hint',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontSize: 34, color: Colors.black54),
+                          style: const TextStyle(fontSize: 34, color: Colors.black54),
                         )
                       : Container(),
                 ),
@@ -140,11 +140,11 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(10.0),
                 child: Card(
                   child: Column(
-                    children: [
+                    children: <Widget>[
                       const Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text(
-                          "Try a number!",
+                          'Try a number!',
                           style: TextStyle(fontSize: 26, color: Colors.black54),
                         ),
                       ),
@@ -157,10 +157,10 @@ class _HomePageState extends State<HomePage> {
                           ),
                           controller: _textEditingController,
                           keyboardType: TextInputType.number,
-                          onChanged: (value) {
+                          onChanged: (String value) {
                             setState(() {
-                              if (int.tryParse(value) == null && value!="") {
-                                error = "please enter a number";
+                              if (int.tryParse(value) == null && value != '') {
+                                error = 'please enter a number';
                               } else {
                                 error = null;
                                 textFieldValue = int.tryParse(value);
@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             onPressedButton();
                             win
-                                ? showDialog(
+                                ? showDialog<void>(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(

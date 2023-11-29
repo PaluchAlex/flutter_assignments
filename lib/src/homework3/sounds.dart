@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/material.dart';
 
-main() {
+void main() {
   runApp(const Sounds());
 }
 
@@ -11,7 +11,7 @@ class Sounds extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Sounds",
+      title: 'Sounds',
       theme: ThemeData(useMaterial3: false),
       home: const HomePage(),
     );
@@ -26,32 +26,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List cardItems = [
-    "bird",
-    "cow",
-    "goat",
-    "horse",
-    "kitty",
-    "monkey",
-    "sheep",
-    "wolf"
-  ];
-  List mp3Items = [
-    "bird.mp3",
-    "cow.mp3",
-    "goat.mp3",
-    "horse.mp3",
-    "kitty.mp3",
-    "monkey.mp3",
-    "sheep.mp3",
-    "wolf.mp3"
-  ];
-  final player = AudioPlayer();
+  List<String> cardItems = <String>['bird', 'cow', 'goat', 'horse', 'kitty', 'monkey', 'sheep', 'wolf'];
+  List<String> mp3Items = <String>['bird.mp3', 'cow.mp3', 'goat.mp3', 'horse.mp3', 'kitty.mp3', 'monkey.mp3', 'sheep.mp3', 'wolf.mp3'];
+
+  // TO : DO CHECK IF PLAYER IS PLAYING AND DISPOSE OF PLAYER TO SAVE MEMORY
+  final AudioPlayer player = AudioPlayer();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sounds"),
+        title: const Text('Sounds'),
         centerTitle: true,
       ),
       body: Padding(
@@ -70,8 +54,7 @@ class _HomePageState extends State<HomePage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  gradient:
-                      const LinearGradient(colors: [Colors.blue, Colors.green]),
+                  gradient: const LinearGradient(colors: <Color>[Colors.blue, Colors.green]),
                   color: Colors.blueAccent,
                   borderRadius: BorderRadius.circular(30),
                 ),
