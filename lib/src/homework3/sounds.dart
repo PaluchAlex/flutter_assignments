@@ -26,8 +26,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> cardItems = <String>['bird', 'cow', 'goat', 'horse', 'kitty', 'monkey', 'sheep', 'wolf'];
-  List<String> mp3Items = <String>['bird.mp3', 'cow.mp3', 'goat.mp3', 'horse.mp3', 'kitty.mp3', 'monkey.mp3', 'sheep.mp3', 'wolf.mp3'];
+  List<String> cardItems = <String>[
+    'bird',
+    'cow',
+    'goat',
+    'horse',
+    'kitty',
+    'monkey',
+    'sheep',
+    'wolf'
+  ];
+  List<String> mp3Items = <String>[
+    'bird.mp3',
+    'cow.mp3',
+    'goat.mp3',
+    'horse.mp3',
+    'kitty.mp3',
+    'monkey.mp3',
+    'sheep.mp3',
+    'wolf.mp3'
+  ];
 
   // TO : DO CHECK IF PLAYER IS PLAYING AND DISPOSE OF PLAYER TO SAVE MEMORY
   final AudioPlayer player = AudioPlayer();
@@ -54,7 +72,8 @@ class _HomePageState extends State<HomePage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: <Color>[Colors.blue, Colors.green]),
+                  gradient: const LinearGradient(
+                      colors: <Color>[Colors.blue, Colors.green]),
                   color: Colors.blueAccent,
                   borderRadius: BorderRadius.circular(30),
                 ),
