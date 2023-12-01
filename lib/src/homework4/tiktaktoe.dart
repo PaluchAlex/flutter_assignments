@@ -54,26 +54,6 @@ class _HomePageState extends State<HomePage> {
     return generatedSquares;
   }
 
-  bool checkForWin(){
-    return false;
-  }
-
-  String checkStateOfGame(){
-    if(checkForWin()){
-      return 'win';
-    }
-    //check diagonals
-    //check lines
-    //check columns
-
-    //check draw
-    if(checkForDraw()){
-      return 'draw';
-    }
-
-    return 'ongoing';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,19 +74,20 @@ class _HomePageState extends State<HomePage> {
                     boardX: x,
                     boardY: y,
                     onPressed: () {
-                      if(checkStateOfGame() != 'ongoing'){
+                      if (kDebugMode) {
+                        print(board);
+                      }
+                      if (checkStateOfGame() != 'ongoing') {
                         setState(() {
                           if (kDebugMode) {
                             print('${checkStateOfGame()}! board resetting...');
                           }
                           resetBoard();
                         });
-
                       } else {
                         setState(() {
                           isX = !isX;
                           //TO:DO check for win
-
                         });
                       }
                     })
@@ -116,16 +97,75 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  String checkStateOfGame() {
+    // check win
+    if (checkForWin()) {
+      return 'win';
+    }
+
+    //check draw
+    if (checkForDraw()) {
+      return 'draw';
+    }
+
+    return 'ongoing';
+  }
+
   bool checkForDraw() {
     bool draw = true;
     List<bool?> line;
-    for(line in board) {
-      if(line.contains(null)){
+    for (line in board) {
+      if (line.contains(null)) {
         /// if a square is empty draw = false
         draw = false;
       }
     }
     return draw;
+  }
+
+  bool checkForWin() {
+    //check diagonals
+    if (checkDiagonals()) {
+      return true;
+    }
+
+    //check lines
+    if (checkLines()) {
+      return true;
+    }
+
+    //check columns
+    if (checkColumns()) {
+      return true;
+    }
+    return false;
+  }
+
+  bool checkDiagonals() {
+    return false;
+  }
+
+  bool checkLines() {
+    List<bool?> line;
+    for (line in board) {
+      if (!line.contains(null)) {
+        if (line[0] == line[1] && line[1] == line[2]) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  bool checkColumns() {
+    for (int i = 0; i < 3; i++) {
+      // if(board[0][i]){
+      //   if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
+      //     return true;
+      //   }
+      // }
+    }
+    return false;
   }
 
   void resetBoard() {
@@ -135,6 +175,7 @@ class _HomePageState extends State<HomePage> {
       <bool?>[null, null, null],
       <bool?>[null, null, null]
     ];
+
     /// X starts
     isX = true;
   }
@@ -144,13 +185,17 @@ class BoardSquare extends StatefulWidget {
   const BoardSquare(
       {super.key,
       required this.isX,
-        /// this variable indicates if its the turn for X or O to play
+
+      /// this variable indicates if its the turn for X or O to play
       required this.board,
-        /// the local memory board
+
+      /// the local memory board
       required this.boardX,
-        /// the X position of the current widget on the board
+
+      /// the X position of the current widget on the board
       required this.boardY,
-        /// the Y position of the current widget on the board
+
+      /// the Y position of the current widget on the board
       required this.onPressed});
 
   final List<List<bool?>> board;
@@ -164,7 +209,6 @@ class BoardSquare extends StatefulWidget {
 }
 
 class _BoardSquareState extends State<BoardSquare> {
-
   void updateMemoryBoard(bool isX, List<List<bool?>> board, int x, int y) {
     board[x][y] = isX;
   }
@@ -173,15 +217,19 @@ class _BoardSquareState extends State<BoardSquare> {
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
-        onTap: widget.board[widget.boardX][widget.boardY] == null ? (){
-            setState(() {
-              updateMemoryBoard(widget.isX, widget.board, widget.boardX, widget.boardY);
-            });
-            widget.onPressed(); //register press outside of widget
-          } : null,
-          /// if square is not empty does nothing onTap
+        onTap: widget.board[widget.boardX][widget.boardY] == null
+            ? () {
+                setState(() {
+                  updateMemoryBoard(widget.isX, widget.board, widget.boardX, widget.boardY);
+                });
+                widget.onPressed(); //register press outside of widget
+              }
+            : null,
+
+        /// if square is not empty does nothing onTap
         child: Center(
           child: updateUIBoard(widget.board),
+
           /// update UI board if square not clear
         ),
       ),
@@ -190,8 +238,7 @@ class _BoardSquareState extends State<BoardSquare> {
 
   Widget updateUIBoard(List<List<bool?>> board) {
     /// true = X, false = O, null = empty
-    if(board[widget.boardX][widget.boardY] != null){
-
+    if (board[widget.boardX][widget.boardY] != null) {
       if (board[widget.boardX][widget.boardY] ?? true) {
         return Text(
           'X',
@@ -205,6 +252,5 @@ class _BoardSquareState extends State<BoardSquare> {
       }
     }
     return Container();
-
   }
 }
