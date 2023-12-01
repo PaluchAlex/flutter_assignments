@@ -78,11 +78,43 @@ class _HomePageState extends State<HomePage> {
                         print(board);
                       }
                       if (checkStateOfGame() != 'ongoing') {
+                        String contentValue = '';
+                        if (checkStateOfGame() == 'win') {
+                          contentValue = 'The winner is ${isX ? 'X' : 'O'}';
+                        }
+                        showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('${checkStateOfGame()}!'),
+                              content: Text(contentValue),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      resetBoard();
+                                    });
+                                    // Close the alert
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Try again!'),
+                                ),
+                                // TextButton(
+                                //   onPressed: () {
+                                //     // Close the alert
+                                //     Navigator.of(context).pop();
+                                //   },
+                                //   child: const Text('OK'),
+                                // ),
+                              ],
+                            );
+                          },
+                        );
                         setState(() {
                           if (kDebugMode) {
                             print('${checkStateOfGame()}! board resetting...');
                           }
-                          resetBoard();
+                          //resetBoard();
                         });
                       } else {
                         setState(() {
@@ -142,6 +174,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   bool checkDiagonals() {
+    if (board[1][1] != null) {
+      // check diagonal 1
+      if (board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+        return true;
+      }
+      //check diagonal 2
+      if (board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+        return true;
+      }
+    }
     return false;
   }
 
@@ -159,11 +201,12 @@ class _HomePageState extends State<HomePage> {
 
   bool checkColumns() {
     for (int i = 0; i < 3; i++) {
-      // if(board[0][i]){
-      //   if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
-      //     return true;
-      //   }
-      // }
+      if (board[i][i] != null) {
+        /// on column win [i] position column can't contain null
+        if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
+          return true;
+        }
+      }
     }
     return false;
   }
