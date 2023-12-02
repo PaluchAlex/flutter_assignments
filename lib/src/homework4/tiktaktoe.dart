@@ -34,26 +34,6 @@ class _HomePageState extends State<HomePage> {
     <bool?>[null, null, null]
   ];
 
-  List<Widget> generateSquares() {
-    final List<Widget> generatedSquares = <Widget>[];
-    for (int x = 0; x < 3; x++) {
-      for (int y = 0; x < 3; y++) {
-        generatedSquares.add(BoardSquare(
-          board: board,
-          boardX: x,
-          boardY: y,
-          isX: isX,
-          onPressed: () {
-            setState(() {
-              isX = !isX;
-            });
-          },
-        ));
-      }
-    }
-    return generatedSquares;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,67 +43,80 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: GridView.count(
-          crossAxisCount: 3,
-          children: <Widget>[
-            for (int x = 0; x < 3; x++)
-              for (int y = 0; y < 3; y++)
-                BoardSquare(
-                    isX: isX,
-                    board: board,
-                    boardX: x,
-                    boardY: y,
-                    onPressed: () {
-                      if (kDebugMode) {
-                        print(board);
-                      }
-                      if (checkStateOfGame() != 'ongoing') {
-                        String contentValue = '';
-                        if (checkStateOfGame() == 'win') {
-                          contentValue = 'The winner is ${isX ? 'X' : 'O'}';
-                        }
-                        showDialog<void>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('${checkStateOfGame()}!'),
-                              content: Text(contentValue),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      resetBoard();
-                                    });
-                                    // Close the alert
-                                    Navigator.of(context).pop();
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(child: Container()),
+              SizedBox(
+                height: 400,
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  children: <Widget>[
+                    for (int x = 0; x < 3; x++)
+                      for (int y = 0; y < 3; y++)
+                        BoardSquare(
+                            isX: isX,
+                            board: board,
+                            boardX: x,
+                            boardY: y,
+                            onPressed: () {
+                              if (kDebugMode) {
+                                print(board);
+                              }
+                              if (checkStateOfGame() != 'ongoing') {
+                                String contentValue = '';
+                                if (checkStateOfGame() == 'win') {
+                                  contentValue = 'The winner is ${isX ? 'X' : 'O'}';
+                                }
+                                showDialog<void>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('${checkStateOfGame()}!'),
+                                      content: Text(contentValue),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              resetBoard();
+                                            });
+                                            // Close the alert
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('Try again!'),
+                                        ),
+                                        // TextButton(
+                                        //   onPressed: () {
+                                        //     // Close the alert
+                                        //     Navigator.of(context).pop();
+                                        //   },
+                                        //   child: const Text('OK'),
+                                        // ),
+                                      ],
+                                    );
                                   },
-                                  child: const Text('Try again!'),
-                                ),
-                                // TextButton(
-                                //   onPressed: () {
-                                //     // Close the alert
-                                //     Navigator.of(context).pop();
-                                //   },
-                                //   child: const Text('OK'),
-                                // ),
-                              ],
-                            );
-                          },
-                        );
-                        setState(() {
-                          if (kDebugMode) {
-                            print('${checkStateOfGame()}! board resetting...');
-                          }
-                          //resetBoard();
-                        });
-                      } else {
-                        setState(() {
-                          isX = !isX;
-                          //TO:DO check for win
-                        });
-                      }
-                    })
-          ],
+                                );
+                                setState(() {
+                                  if (kDebugMode) {
+                                    print('${checkStateOfGame()}! board resetting...');
+                                  }
+                                  //resetBoard();
+                                });
+                              } else {
+                                setState(() {
+                                  isX = !isX;
+                                  //TO:DO check for win
+                                });
+                              }
+                            }
+                            )
+                  ],
+                ),
+              ),
+              Expanded(child: Container()),
+            ],
+          ),
         ),
       ),
     );
@@ -227,18 +220,15 @@ class _HomePageState extends State<HomePage> {
 class BoardSquare extends StatefulWidget {
   const BoardSquare(
       {super.key,
-      required this.isX,
-
       /// this variable indicates if its the turn for X or O to play
-      required this.board,
-
+      required this.isX,
       /// the local memory board
-      required this.boardX,
-
+      required this.board,
       /// the X position of the current widget on the board
-      required this.boardY,
-
+      required this.boardX,
       /// the Y position of the current widget on the board
+      required this.boardY,
+      ///callback for onTap
       required this.onPressed});
 
   final List<List<bool?>> board;
@@ -260,6 +250,7 @@ class _BoardSquareState extends State<BoardSquare> {
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
+        /// if the square is empty register tap else disable tap
         onTap: widget.board[widget.boardX][widget.boardY] == null
             ? () {
                 setState(() {
@@ -268,12 +259,9 @@ class _BoardSquareState extends State<BoardSquare> {
                 widget.onPressed(); //register press outside of widget
               }
             : null,
-
-        /// if square is not empty does nothing onTap
         child: Center(
+          /// update UI board according to the memory board
           child: updateUIBoard(widget.board),
-
-          /// update UI board if square not clear
         ),
       ),
     );
@@ -282,6 +270,8 @@ class _BoardSquareState extends State<BoardSquare> {
   Widget updateUIBoard(List<List<bool?>> board) {
     /// true = X, false = O, null = empty
     if (board[widget.boardX][widget.boardY] != null) {
+      /// the ?? operator uses the value of the nullable operator if it isn't
+      /// null else it uses the other value given
       if (board[widget.boardX][widget.boardY] ?? true) {
         return Text(
           'X',
