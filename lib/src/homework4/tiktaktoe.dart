@@ -109,8 +109,7 @@ class _HomePageState extends State<HomePage> {
                                   //TO:DO check for win
                                 });
                               }
-                            }
-                            )
+                            })
                   ],
                 ),
               ),
@@ -220,14 +219,19 @@ class _HomePageState extends State<HomePage> {
 class BoardSquare extends StatefulWidget {
   const BoardSquare(
       {super.key,
+
       /// this variable indicates if its the turn for X or O to play
       required this.isX,
+
       /// the local memory board
       required this.board,
+
       /// the X position of the current widget on the board
       required this.boardX,
+
       /// the Y position of the current widget on the board
       required this.boardY,
+
       ///callback for onTap
       required this.onPressed});
 
