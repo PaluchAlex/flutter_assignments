@@ -39,21 +39,18 @@ class MovieTitleListState extends State<MovieTitleList> {
   Future<void> fetchData() async {
     final http.Response response = await http.get(Uri.parse('https://yts.mx/api/v2/list_movies.json'));
     if (response.statusCode == 200) {
-
       /// cast decoded as Map<String, dynamic>
-      final Map<String, dynamic> decoded = jsonDecode(response.body) as
-      Map<String, dynamic>;
+      final Map<String, dynamic> decoded = jsonDecode(response.body) as Map<String, dynamic>;
 
       /// cast decoded['data'] as Map<String, dynamic> (because it is subtype
       /// of dynamic
       final Map<String, dynamic> data = decoded['data'] as Map<String, dynamic>;
 
       /// cast data['movies'] to movies variable as List<dynamic>
-      final List<dynamic> movies = data['movies'] as
-      List<dynamic>;
+      final List<dynamic> movies = data['movies'] as List<dynamic>;
       Map<String, dynamic> currentMovie;
       setState(() {
-        for(final dynamic movie in movies){
+        for (final dynamic movie in movies) {
           currentMovie = movie as Map<String, dynamic>;
           movieTitles.add(currentMovie['title'] as String);
         }
