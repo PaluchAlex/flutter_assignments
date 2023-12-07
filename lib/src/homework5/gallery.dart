@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:core';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,7 +29,6 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-
 class _HomeState extends State<Home> {
   final ScrollController controller = ScrollController();
   final List<Photo> items = <Photo>[];
@@ -43,6 +41,7 @@ class _HomeState extends State<Home> {
     controller.addListener(onScroll);
     loadItems();
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -50,20 +49,15 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _launchURL(Uri url) async {
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      if (kDebugMode) {
-        print('Could not launch $url');
-      }
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
     }
   }
-
 
   void onScroll() {
     final double offset = controller.offset;
     final double maxExtent = controller.position.maxScrollExtent;
-    if (!isLoading && offset > maxExtent*0.8){
+    if (!isLoading && offset > maxExtent * 0.8) {
       loadItems();
     }
   }
@@ -118,27 +112,26 @@ class _HomeState extends State<Home> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      _launchURL(Uri.parse('https://example.com'));
+                      _launchURL(Uri.parse(
+                          'https://images.unsplash.com/photo-1701836924089-7fb060024d88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Mzc1MTF8MHwxfGFsbHw0fHx8fHx8Mnx8MTcwMTg2MTYwNXw&ixlib=rb-4.0.3&q=80&w=1080'));
                     },
                     child: Image.network(
-                        photo.urls['small'] as String,
-                        //height: 445,
-                        loadingBuilder: (BuildContext context, Widget widget,
-                            ImageChunkEvent? progress) {
-                          if(progress == null) {
-                            return widget;
-                          }
-                          return SizedBox(
-                            height: 345,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                value: progress.cumulativeBytesLoaded /
-                                    (progress.expectedTotalBytes ?? 1),
-                              ),
+                      photo.urls['small'] as String,
+                      //height: 445,
+                      loadingBuilder: (BuildContext context, Widget widget, ImageChunkEvent? progress) {
+                        if (progress == null) {
+                          return widget;
+                        }
+                        return SizedBox(
+                          height: 345,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: progress.cumulativeBytesLoaded / (progress.expectedTotalBytes ?? 1),
                             ),
-                          );
-                        },
-                        ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -161,7 +154,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
 }
 
 class Photo {
