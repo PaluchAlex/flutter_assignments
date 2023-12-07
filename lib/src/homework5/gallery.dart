@@ -112,8 +112,10 @@ class _HomeState extends State<Home> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      _launchURL(Uri.parse(
-                          'https://images.unsplash.com/photo-1701836924089-7fb060024d88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Mzc1MTF8MHwxfGFsbHw0fHx8fHx8Mnx8MTcwMTg2MTYwNXw&ixlib=rb-4.0.3&q=80&w=1080'));
+                      final Map<String, dynamic> currentPhotoLinks = photo
+                          .user['links'] as Map<String, dynamic>;
+                      _launchURL(Uri.parse(currentPhotoLinks['html']! as
+                      String));
                     },
                     child: Image.network(
                       photo.urls['small'] as String,
