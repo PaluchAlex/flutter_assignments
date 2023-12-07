@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:core';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../config.dart';
 
 void main() {
   runApp(const Gallery());
@@ -32,7 +33,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final ScrollController controller = ScrollController();
   final List<Photo> items = <Photo>[];
-  static const String accessKey = AppConfig.apiKey;
   bool initialLoading = true;
   bool isLoading = true;
   int page = 1;
@@ -67,6 +67,8 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> loadItems() async {
+    await dotenv.load();
+    final String? accessKey = dotenv.env['UNSPLASH_API_KEY'];
     setState(() => isLoading = true);
 
     final Client client = Client();
