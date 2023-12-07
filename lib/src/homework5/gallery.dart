@@ -32,6 +32,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final ScrollController controller = ScrollController();
   final List<Photo> items = <Photo>[];
+  static const String accessKey = AppConfig.apiKey;
+  bool initialLoading = true;
   bool isLoading = true;
   int page = 1;
 
@@ -57,6 +59,8 @@ class _HomeState extends State<Home> {
   void onScroll() {
     final double offset = controller.offset;
     final double maxExtent = controller.position.maxScrollExtent;
+
+    /// load items when scrolled past 80% of max
     if (!isLoading && offset > maxExtent * 0.8) {
       loadItems();
     }
@@ -65,24 +69,29 @@ class _HomeState extends State<Home> {
   Future<void> loadItems() async {
     setState(() => isLoading = true);
 
-    const String accessKey = AppConfig.apiKey;
-
     final Client client = Client();
     final Response response = await client.get(
-        Uri.parse('https://api'
-            '.unsplash.com/photos/?page=$page'),
-        headers: <String, String>{'Authorization': 'Client-ID $accessKey'});
+      Uri.parse('https://api.unsplash.com/photos/?page=$page'),
+      headers: <String, String>{'Authorization': 'Client-ID $accessKey'},
+    );
     if (response.statusCode == 200) {
-      /// cast decoded as Map<String, dynamic>
+      /// cast decoded as List<dynamic>
       final List<dynamic> decoded = jsonDecode(response.body) as List<dynamic>;
 
-      /// add to items
+      /// add to items as a instance of Class Photo
       for (final dynamic item in decoded) {
         items.add(Photo(item as Map<String, dynamic>));
       }
+
+      ///prepare for loading next page
       page++;
 
-      setState(() => isLoading = false);
+      setState(
+        () {
+          isLoading = false;
+          initialLoading = false;
+        },
+      );
     }
   }
 
@@ -90,12 +99,12 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gallery'),
+        title: const Text('Unsplash Gallery'),
         centerTitle: true,
       ),
       body: Builder(
         builder: (BuildContext context) {
-          if (isLoading) {
+          if (initialLoading) {
             return const Center(child: CircularProgressIndicator());
           }
           return ListView.separated(
@@ -112,10 +121,8 @@ class _HomeState extends State<Home> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      final Map<String, dynamic> currentPhotoLinks = photo
-                          .user['links'] as Map<String, dynamic>;
-                      _launchURL(Uri.parse(currentPhotoLinks['html']! as
-                      String));
+                      final Map<String, dynamic> currentPhotoLinks = photo.user['links'] as Map<String, dynamic>;
+                      _launchURL(Uri.parse(currentPhotoLinks['html']! as String));
                     },
                     child: Image.network(
                       photo.urls['small'] as String,
@@ -145,7 +152,7 @@ class _HomeState extends State<Home> {
                           Text('Author: ${photo.user['name']}'),
                         ],
                       ),
-                      subtitle: Text(photo.altDescription),
+                      subtitle: Center(child: Text(photo.altDescription)),
                     ),
                   )
                 ],
