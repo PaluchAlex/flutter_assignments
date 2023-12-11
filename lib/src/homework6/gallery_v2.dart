@@ -95,12 +95,17 @@ class _HomeState extends State<Home> {
         page++;
       }
     } else {
-      page = 1;
-      items.clear();
+
       final Client client = Client();
+      final Uri uri = Uri.parse('https://api.unsplash.com/search/photos');
       final Response response = await client.get(
-        Uri.parse('https://api.unsplash'
-            '.com/search/photos/?page=$page&query=$query&color=$color'),
+        uri.replace(
+          queryParameters: <String, String>{
+            'page' : '$page',
+            if (query.isNotEmpty) 'query' : query,
+            if (color.isNotEmpty) 'color' : color,
+          },
+        ),
         headers: <String, String>{'Authorization': 'Client-ID $accessKey'},
       );
       if (response.statusCode == 200) {
@@ -128,6 +133,10 @@ class _HomeState extends State<Home> {
     );
   }
 
+  void resetContent(){
+    page = 1;
+    items.clear();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,9 +157,9 @@ class _HomeState extends State<Home> {
                     ),
                     onChanged: (String value) {
                       query = value;
-                      if (value.isNotEmpty) {
-                        loadItems();
-                      }
+                      /// reset pages
+                      resetContent();
+                      loadItems();
                     },
                   ),
                 ),
@@ -159,9 +168,8 @@ class _HomeState extends State<Home> {
                 child: DropdownMenu<String>(
                   onSelected: (String? value) {
                     color = value ?? '';
-                    if (color.isNotEmpty) {
-                      loadItems();
-                    }
+                    resetContent();
+                    loadItems();
                   },
                   dropdownMenuEntries: allColors.map(
                     (String item) {
@@ -184,7 +192,7 @@ class _HomeState extends State<Home> {
                 return CustomScrollView(
                   controller: controller,
                   slivers: <Widget>[
-                    if (items.isEmpty)
+                    if (items.isEmpty && !isLoading)
                       const SliverToBoxAdapter(
                         child: Center(
                           child: Text('no items found'),
@@ -240,9 +248,13 @@ class _HomeState extends State<Home> {
                     if (isLoading)
                       const SliverToBoxAdapter(
                         child: Padding(
-                          padding: EdgeInsets.only(bottom: 16),
-                          child: Center(
-                            child: CircularProgressIndicator(),
+                          
+                          padding: EdgeInsets.all(32),
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 16),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
                         ),
                       ),
@@ -271,6 +283,7 @@ class Photo {
 }
 
 const List<String> allColors = <String>[
+  '',
   'black_and_white',
   'black',
   'white',
