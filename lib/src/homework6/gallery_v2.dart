@@ -95,15 +95,14 @@ class _HomeState extends State<Home> {
         page++;
       }
     } else {
-
       final Client client = Client();
       final Uri uri = Uri.parse('https://api.unsplash.com/search/photos');
       final Response response = await client.get(
         uri.replace(
           queryParameters: <String, String>{
-            'page' : '$page',
-            if (query.isNotEmpty) 'query' : query,
-            if (color.isNotEmpty) 'color' : color,
+            'page': '$page',
+            if (query.isNotEmpty) 'query': query,
+            if (color.isNotEmpty) 'color': color,
           },
         ),
         headers: <String, String>{'Authorization': 'Client-ID $accessKey'},
@@ -133,10 +132,11 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void resetContent(){
+  void resetContent() {
     page = 1;
     items.clear();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,6 +157,7 @@ class _HomeState extends State<Home> {
                     ),
                     onChanged: (String value) {
                       query = value;
+
                       /// reset pages
                       resetContent();
                       loadItems();
@@ -248,7 +249,6 @@ class _HomeState extends State<Home> {
                     if (isLoading)
                       const SliverToBoxAdapter(
                         child: Padding(
-                          
                           padding: EdgeInsets.all(32),
                           child: Padding(
                             padding: EdgeInsets.only(bottom: 16),
